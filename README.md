@@ -257,6 +257,16 @@ begin
 end $$;
 --------------------
 
+set http_proxy=http://:80
+set HTTP_PROXY=%http_proxy%
+set https_proxy=%http_proxy%
+set HTTPS_PROXY=%http_proxy%
+set no_proxy=*registry-1.docker.io
+
+--------------
+
+mvn spring-boot:run -o -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005" -s menlo_settings.xml -Dmaven.repo.local=C:/.m2/repository 
+
 
 
 
