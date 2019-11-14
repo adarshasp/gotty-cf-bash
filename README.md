@@ -194,3 +194,52 @@ GoTTY uses [hterm](https://groups.google.com/a/chromium.org/forum/#!forum/chromi
 # License
 
 The MIT License
+
+
+
+------------------------------------------------------------------------------------
+
+
+
+
+git clone https://github.com/gurjeet/gotty-cf-bash.git
+
+cd gotty-cf-bash 
+cf push --random-route
+
++++++++++++++++++++++++++++++++
+On gotty:
++++++++++++++++++++++++++++++++
+
+wget http://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-9.6/postgresql-client-9.6_9.6.8-1.pgdg90+1_amd64.deb
+wget http://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-9.6/libpq5_9.6.3-1.pgdg12.4+1_amd64.deb
+
+ar x libpq5_9.6.3-1.pgdg12.4+1_amd64.deb
+tar xvf data.tar.xz --directory $HOME
+
+ar x postgresql-client-9.6_9.6.8-1.pgdg90+1_amd64.deb
+tar xvf data.tar.xz --directory $HOME
+
+export LD_LIBRARY_PATH="${HOME}/usr/lib/x86_64-linux-gnu/:${LD_LIBRARY_PATH}"
+export PATH="${HOME}/usr/lib/postgresql/9.6/bin/:${PATH}"
+
+
+
+SRC_DB_HOST=""
+SRC_DB_PORT="5432"
+SRC_DB_NAME="postgres"
+SRC_USER_NAME=""
+SRC_USER_PASSWORD=""
+
+DEST_DB_HOST=""
+DEST_DB_PORT="5432"
+DEST_DB_NAME="rc-backup-v1"
+DEST_USER_NAME=""
+DEST_USER_PASSWORD=""
+
+Sample script:
+
+PGPASSWORD=$SRC_USER_PASSWORD pg_dump  -h $SRC_DB_HOST -p $SRC_DB_PORT -U $SRC_USER_NAME -d $SRC_DB_NAME --serializable-deferrable --no-owner --no-privileges | PGPASSWORD=$DEST_USER_PASSWORD psql -h $DEST_DB_HOST -p $DEST_DB_PORT -U $DEST_USER_NAME -d $DEST_DB_NAME --echo-all
+
+
+
