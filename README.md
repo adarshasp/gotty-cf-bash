@@ -241,5 +241,22 @@ Sample script:
 
 PGPASSWORD=$SRC_USER_PASSWORD pg_dump  -h $SRC_DB_HOST -p $SRC_DB_PORT -U $SRC_USER_NAME -d $SRC_DB_NAME --serializable-deferrable --no-owner --no-privileges | PGPASSWORD=$DEST_USER_PASSWORD psql -h $DEST_DB_HOST -p $DEST_DB_PORT -U $DEST_USER_NAME -d $DEST_DB_NAME --echo-all
 
+---------------------------------------------------
+
+
+Select count(*) from pg_stat_activity where state = 'active'
+------------------------
+do $$
+declare 
+    rec record;
+begin
+    for rec in select * from pg_stat_activity where pid <> pg_backend_pid() and query like '%SELECT DISTINCT%' and application_name !~ '(?:Psql)|-(?:PgAdmin.+)'
+    loop
+        perform pg_terminate_backend(rec.pid);
+    end loop;
+end $$;
+--------------------
+
+
 
 
